@@ -3000,6 +3000,7 @@ static void serial8250_config_port(struct uart_port *port, int flags)
 
 	register_dev_spec_attr_grp(up);
 	up->fcr = uart_config[up->port.type].fcr;
+	serial8250_enable_ms(port); // test-only
 }
 
 static int
