@@ -116,6 +116,7 @@
 
 	aliases {
 		serial0 = &uart0;
+		ethernet0 = &mac0;
 	};
 };
 
@@ -168,6 +169,48 @@
 		linux,mtd-name = "gd5f";
 		reg = <1>;
 		spi-max-frequency = <40000000>;
+	};
+};
+
+&ethernet {
+	status = "okay";
+
+	mac0: mac@0 {
+		compatible = "mediatek,eth-mac";
+		reg = <0>;
+		phy-mode = "mii";
+
+		fixed-link {
+			speed = <100>;
+			full-duplex;
+			pause;
+		};
+	};
+};
+
+&esw {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@0 {
+			reg = <0>;
+			label = "lan";
+		};
+
+		port@6 {
+			reg = <6>;
+			label = "cpu";
+			ethernet = <&mac0>;
+			phy-mode = "mii";
+
+			fixed-link {
+				speed = <100>;
+				full-duplex;
+			};
+		};
 	};
 };
 
