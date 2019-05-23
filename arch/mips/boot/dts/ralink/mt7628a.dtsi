@@ -285,4 +285,31 @@
 		interrupt-parent = <&intc>;
 		interrupts = <18>;
 	};
+
+	ethernet: ethernet@10100000 {
+		compatible = "ralink,rt5350-eth";
+		reg = <0x10100000 0x10000>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		interrupt-parent = <&cpuintc>;
+		interrupts = <5>;
+
+		resets = <&resetc 21>;
+		reset-names = "fe";
+
+		status = "disabled";
+	};
+
+	esw: esw@10110000 {
+		compatible = "ralink,rt3050-esw";
+		reg = <0x10110000 0x8000>;
+
+		resets = <&resetc 23>;
+		reset-names = "esw";
+
+		interrupt-parent = <&intc>;
+		interrupts = <17>;
+	};
 };
