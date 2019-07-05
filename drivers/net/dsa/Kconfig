@@ -40,6 +40,14 @@ config NET_DSA_MT7530
 	  This enables support for the Mediatek MT7530 Ethernet switch
 	  chip.
 
+config NET_DSA_MT7628
+	tristate "Mediatek MT7628 Ethernet switch support (ESW)"
+	depends on NET_DSA
+	select NET_DSA_TAG_MTK
+	---help---
+	  This enables support for the Mediatek MT7628 Ethernet switch (ESW)
+	  chip.
+
 config NET_DSA_MV88E6060
 	tristate "Marvell 88E6060 ethernet switch chip support"
 	depends on NET_DSA
