@@ -827,10 +827,12 @@ static int mtk_tx_map(struct sk_buff *skb, struct net_device *dev,
 	WRITE_ONCE(itxd->txd4, txd4);
 	WRITE_ONCE(itxd->txd3, (TX_DMA_SWC | TX_DMA_PLEN0(skb_headlen(skb)) |
 				(!nr_frags * TX_DMA_LS0)));
-	if (k & 0x1)
-		txd_pdma->txd2 |= TX_DMA_LS0;
-	else
-		txd_pdma->txd2 |= TX_DMA_LS1;
+	if (MTK_HAS_CAPS(eth->soc->caps, MTK_SOC_MT7628)) {
+		if (k & 0x1)
+			txd_pdma->txd2 |= TX_DMA_LS0;
+		else
+			txd_pdma->txd2 |= TX_DMA_LS1;
+	}
 
 	netdev_sent_queue(dev, skb->len);
 	skb_tx_timestamp(skb);
@@ -863,7 +865,9 @@ err_dma:
 		mtk_tx_unmap(eth, tx_buf);
 
 		itxd->txd3 = TX_DMA_LS0 | TX_DMA_OWNER_CPU;
-		itxd_pdma->txd2 = TX_DMA_DESP2_DEF;
+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_SOC_MT7628))
+			itxd_pdma->txd2 = TX_DMA_DESP2_DEF;
+
 		itxd = mtk_qdma_phys_to_virt(ring, itxd->txd2);
 		itxd_pdma = qdma_to_pdma(ring, itxd);
 	} while (itxd != txd);
