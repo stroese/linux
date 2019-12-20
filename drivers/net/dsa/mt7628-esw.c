@@ -618,6 +618,8 @@ static irqreturn_t mt7628_esw_interrupt(int irq, void *_priv)
 
 		for (i = 0; i < MT7628_ESW_NUM_LEDS; i++) {
 			const struct dsa_port *dp = dsa_to_port(priv->ds, i);
+			const struct dsa_port *dp_cpu =
+				dsa_to_port(priv->ds, MT7628_ESW_CPU_PORT);
 
 			/* Skip disabled ports */
 			if (!priv->ports[i].enable)
@@ -630,6 +632,15 @@ static irqreturn_t mt7628_esw_interrupt(int irq, void *_priv)
 				netif_carrier_on(dp->slave);
 			else
 				netif_carrier_off(dp->slave);
+
+			/*
+			 * On the IOT mode (only PHY, no switch used) also
+			 * set link on the master net node (eth0)
+			 */
+			if (link & BIT(i))
+				netif_carrier_on(dp_cpu->slave);
+			else
+				netif_carrier_off(dp_cpu->slave);
 		}
 	}
 
